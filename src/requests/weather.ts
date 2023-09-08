@@ -1,5 +1,8 @@
 import { get } from './request'
 
+/**
+ * @link https://dev.qweather.com/docs/api/weather/weather-now/
+ */
 function getCityWeatherByadcode(location: string | number = 'chengdu') {
   return get(`/city`, { location: location, key: 'a2e3fd0b626d4c42ab5d913d0caee934' })
 }
@@ -8,6 +11,7 @@ function getCityWeatherByadcode(location: string | number = 'chengdu') {
  * 
  * @param count : 3-30天天气预报
  * @param location : 行政区名称、citycode、adcode、以英文逗号分隔的经度,纬度坐标
+ * @link https://dev.qweather.com/docs/api/weather/weather-daily-forecast/
  * @returns 
  */
 function getWeather(count: number, location: number = 101270101) {
@@ -23,6 +27,7 @@ function getWeather(count: number, location: number = 101270101) {
                         1：返回下一级行政区；
                         2：返回下两级行政区；
                         3：返回下三级行政区；
+ * @link https://lbs.amap.com/api/webservice/guide/api/district
  * @returns 
  */
 function getCityByProvince(province: number | string = '四川', subdistrict: 0 | 1 | 2 = 0) {
