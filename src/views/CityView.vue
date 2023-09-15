@@ -5,6 +5,7 @@ import { useCountryStore } from '@/stores/country';
 import { storeToRefs } from 'pinia';
 import { getCityWeatherForecast, getCityLocationByAdcode, getCityWeatherNow } from '@/requests/weather';
 import { ResultType } from './ProvinceView.vue';
+import { ElLoading } from 'element-plus'
 
 const goBack = () => {
   router.go(-1);
@@ -39,7 +40,6 @@ const cityWeatherForecastList = ref<Array<any>>([]);
 const cityWeatherNow = ref<WeatherNowType>();
 const count = ref<number>(3);
 
-
 async function getCurCityWeather() {
   await getCityLocationByAdcode(current_city.value.adcode).then((res: ResultType) => {
     cityLocations.value = res.location[0].id;
@@ -51,15 +51,16 @@ async function getCurCityWeather() {
   })
 
   //@ts-ignore
-  // await getCityWeatherNow(cityLocations.value).then((res: WeatherNowResultType) => {
-  //   cityWeatherNow.value = res.now
-  // });
+  await getCityWeatherNow(cityLocations.value).then((res: WeatherNowResultType) => {
+    cityWeatherNow.value = res.now
+  });
 }
 
 
 onBeforeMount(() => {
   getCurCityWeather();
 })
+
 
 </script>
 
@@ -80,9 +81,9 @@ onBeforeMount(() => {
     </div>
     <div class="content">
       <div>
-        <!-- <span>当前温度：{{ cityWeatherNow.temp }}℃</span>
+        <span>当前温度：{{ cityWeatherNow.temp }}℃</span>
         <span>当前天气: {{ cityWeatherNow.text }}</span>
-        <span>{{ cityWeatherForecastList[0].tempMax }}/{{ cityWeatherForecastList[0].tempMin }}</span> -->
+        <span>{{ cityWeatherForecastList[0].tempMax }}/{{ cityWeatherForecastList[0].tempMin }}</span>
       </div>
       <div class="weather-item" v-for="weather in cityWeatherForecastList" :key="weather.fxDate">
         <span>{{ weather.fxDate }}</span>

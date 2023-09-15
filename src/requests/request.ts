@@ -1,7 +1,7 @@
 import axios, { type AxiosRequestConfig, type AxiosResponse } from 'axios'
 import { statusCode } from './codeStatus'
 import 'element-plus/es/components/message/style/css'
-import { ElMessage } from 'element-plus/lib/components/message/index.js';
+import { ElMessage } from 'element-plus'
 
 interface ResponseData {
     code: number;

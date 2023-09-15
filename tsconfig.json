@@ -10,11 +10,17 @@
   ],
   "compilerOptions": {
     "baseUrl": "./",
+    "target": "es5",  
+    "module": "commonjs",  
+    "declaration": true,  
+    "outDir": "./dist",  
+    "rootDir": "./src", 
     "paths":{
       "@": ["src"],
       "@/*": ["src/*"],
     },
-    "types": ["element-plus/global"],
+    "esModuleInterop": true,  
+    "forceConsistentCasingInFileNames": true ,
   },
   "include": [
     "**/*.ts",
