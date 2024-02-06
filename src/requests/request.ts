@@ -20,8 +20,8 @@ service.interceptors.request.use((res: AxiosRequestConfig): any => {
     return Promise.reject(error);
 });
 
-service.interceptors.response.use((response: AxiosResponse): any => {
-    const res = response.data as ResponseData
+service.interceptors.response.use((response: AxiosResponse<ResponseData,any>): any => {
+    const res = response.data
     if (response.status !== 200) {
         // 统一处理错误
         return ElMessage.error(res.message || '请求失败')
@@ -35,11 +35,11 @@ service.interceptors.response.use((response: AxiosResponse): any => {
 });
 
 // 封装get请求
-export const get = (url: string, params?: any) => {
+export const get = (url: string, params?: any):any => {
     return service.get(url, {params})
 }
 
 // 封装post请求
-export const post = (url: string, data?: any) => {
+export const post = (url: string, data?: any):any => {
     return service.post(url, data)
 }

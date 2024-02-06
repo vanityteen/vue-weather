@@ -1,71 +1,49 @@
 <script setup lang="ts">
 import router from '@/router';
 import { onBeforeMount, onMounted, ref } from 'vue';
+import { getCityByProvince } from '@/requests/weather';
 import { useCountryStore } from '@/stores/country';
 import { storeToRefs } from 'pinia';
-import { getCityWeatherForecast, getCityLocationByAdcode, getCityWeatherNow } from '@/requests/weather';
-import { ResultType } from './ProvinceView.vue';
-import { ElLoading } from 'element-plus'
+import { ElLoading } from 'element-plus';
 
-const goBack = () => {
-  router.go(-1);
-}
-
-type WeatherForecastResultType = {
-  fxDate: string; // 预报日期
-  daily: Array<any>;
-  fxLink: string; // 当前数据的响应式页面，便于嵌入网站或应用
-  [key: string]: any;
-}
-
-type WeatherNowType = {
-  temp: string; // 温度，默认单位：摄氏度
-  text: string; // 天气状况的文字描述，包括阴晴雨雪等天气状态的描述
-  [key: string]: any;
-}
-
-type WeatherNowResultType = {
-  now: WeatherNowType;
-  fxLink: string;
-  [key: string]: any;
+// 类型定义
+export type ResultType = {
+  location?: Array<any>,
+  [key: string]: any,
 }
 
 // 全局状态
 const countryStore = useCountryStore();
-const { current_city, current_province } = storeToRefs(countryStore);
-// const { changeCurrentCity } = countryStore;
+// const { current_city } = storeToRefs(countryStore);
+const { changeCurrentCity, current_province } = countryStore;
 
-const cityLocations = ref<number>();
-const cityWeatherForecastList = ref<Array<any>>([]);
-const cityWeatherNow = ref<WeatherNowType>();
-const count = ref<number>(3);
+const cityNumberList = ref([]);
 
-async function getCurCityWeather() {
-  await getCityLocationByAdcode(current_city.value.adcode).then((res: ResultType) => {
-    cityLocations.value = res.location[0].id;
+onMounted(() => {
+  const loadingInstance = ElLoading.service({
+    lock: true,
+    text: 'Loading...',
+    background: 'rgba(0, 0, 0, 0.7)',
   })
 
-  //@ts-ignore
-  await getCityWeatherForecast(count.value, cityLocations.value).then((res: WeatherForecastResultType) => {
-    cityWeatherForecastList.value = res.daily
-  })
-
-  //@ts-ignore
-  await getCityWeatherNow(cityLocations.value).then((res: WeatherNowResultType) => {
-    cityWeatherNow.value = res.now
+  getCityByProvince(current_province.adcode).then((res: ResultType) => {
+    cityNumberList.value = res.districts[0].districts;
+    loadingInstance.close();
   });
-}
-
-
-onBeforeMount(() => {
-  getCurCityWeather();
 })
 
+const getCurCityWeather = (city) => {
+  city && changeCurrentCity(city);
+  router.push({ name: 'weather', query: { name: city.name, adcode: city.adcode } });
+}
 
+const goBack = () => {
+  router.go(-1);
+}
 </script>
 
 <template>
-  <div class="city-container">
+  <div class="province-container">
     <div class="header">
       <div class="back">
         <el-icon @click="goBack" :size="24" class="el-back-icon-hover">
@@ -76,22 +54,57 @@ onBeforeMount(() => {
       <i class="split"></i>
       <div class="info">
         <h1>{{ current_province.name }}</h1>
-        <span>({{ current_city.name }})</span>
       </div>
     </div>
-    <div class="content">
-      <div>
-        <span>当前温度：{{ cityWeatherNow.temp }}℃</span>
-        <span>当前天气: {{ cityWeatherNow.text }}</span>
-        <span>{{ cityWeatherForecastList[0].tempMax }}/{{ cityWeatherForecastList[0].tempMin }}</span>
-      </div>
-      <div class="weather-item" v-for="weather in cityWeatherForecastList" :key="weather.fxDate">
-        <span>{{ weather.fxDate }}</span>
-        <span>{{ weather.textDay }}/{{ weather.textNight }}</span>
-        <span>{{ weather.tempMax }}/{{ weather.tempMin }}</span>
-      </div>
-    </div>
+    <li v-for="city in cityNumberList" :key="city.adcode" @click="getCurCityWeather(city)">
+      {{ city.name }}
+    </li>
   </div>
 </template>
 
-<style src="./city.less" scoped lang="less"></style>
+<style scoped lang="less">
+.province-container {
+  width: 100%;
+  height: 100%;
+  background-color: #fff;
+  padding: 16px;
+
+  .header {
+    display: flex;
+    align-items: center;
+    column-gap: 16px;
+    .back{
+      display: flex;
+      align-items: center;
+      column-gap: 8px;
+      >span{
+        font-size: 18px;
+        font-weight: 700;
+      }
+      .el-back-icon-hover:hover{
+        background-color: #f5f5f5;
+        border: 1px solid #d9d9d9;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+    }
+    .split {
+      width: 1px;
+      height: 18px;
+      background-color: #c5c5c5;
+    }
+    .info{
+      display: flex;
+      align-items: center;
+      column-gap: 16px;
+      >h1 {
+        font-weight: 700;
+        font-size: 18px;
+      }
+      >span{
+        color: #c5c5c5;
+      }
+    }
+  }
+}
+</style>

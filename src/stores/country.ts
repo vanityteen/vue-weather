@@ -10,30 +10,29 @@ import { defineStore } from 'pinia'
 
 //   return { count, doubleCount, increment }
 // })
-interface CityType{
+
+interface ProvinceType {
   name: string;
   adcode: string;
+  [key:string]:any;
+}
+
+interface CityType extends ProvinceType{
   level: string;
   center?: string;
   citycode?: Array<any>;
   [key:string]:any;
 }
 
-interface ProvinceType extends CityType{
-  districts: Array<CityType>;
-}
-
-
-
 export const useCountryStore = defineStore('country', () => {
   const current_province = ref<ProvinceType>();
   const current_city = ref<CityType>();
 
-  function changeCurrentProvince(province: Object<any>) {
+  function changeCurrentProvince(province: ProvinceType) {
     current_province.value = province;
   }
 
-  function changeCurrentCity(city: Object<any>) {
+  function changeCurrentCity(city: CityType) {
     current_city.value = city;
   }
 

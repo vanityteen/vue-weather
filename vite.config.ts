@@ -50,7 +50,14 @@ export default defineConfig({
         rewrite: (path) => {
           return path.replace(/^\/province/, '')
         }
-      }
+      },
+      '/country': {
+        target: 'https://restapi.amap.com/v3/config/district',
+        changeOrigin: true,
+        rewrite: (path) => {
+          return path.replace(/^\/country/, '')
+        }
+      },
     }
   },
   css: {

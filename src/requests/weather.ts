@@ -15,9 +15,9 @@ function getCityLocationByAdcode(location: string | number = 'chengdu') {
  * @note 实时天气预报API
  * @param location : 通过 getCityLocationByAdcode 接口获取
  * @link https://dev.qweather.com/docs/api/weather/weather-now/
- * @returns 
+ * @returns
  */
-function getCityWeatherNow(location: number = 101270101){
+function getCityWeatherNow(location: number = 101270101) {
   return get(`/api/now`, { location: location, key: 'a2e3fd0b626d4c42ab5d913d0caee934' })
 }
 
@@ -26,7 +26,7 @@ function getCityWeatherNow(location: number = 101270101){
  * @param count : 3-30天天气预报
  * @param location : 通过 getCityLocationByAdcode 接口获取
  * @link https://dev.qweather.com/docs/api/weather/weather-daily-forecast/
- * @returns 
+ * @returns
  */
 function getCityWeatherForecast(count: number, location: number = 101270101) {
   return get(`/api/${count}d`, { location: location, key: 'a2e3fd0b626d4c42ab5d913d0caee934' })
@@ -46,7 +46,23 @@ function getCityWeatherForecast(count: number, location: number = 101270101) {
  */
 function getCityByProvince(province: number | string = '四川', subdistrict: 0 | 1 | 2 = 1) {
   // 获取省份下的各地级市
-  return get(`/province`, { keywords: province, key: 'd1c11f906effa6c50f400d4016991320',subdistrict: subdistrict })
+  return get(`/province`, {
+    keywords: province,
+    key: 'd1c11f906effa6c50f400d4016991320',
+    subdistrict: subdistrict
+  })
 }
 
-export { getCityWeatherNow, getCityWeatherForecast, getCityLocationByAdcode, getCityByProvince }
+async function getProvince() {
+  // 获取全国省份
+ const res =  await get(`/country`, { key: 'd1c11f906effa6c50f400d4016991320' });
+ return res?.districts.length ? res?.districts?.[0].districts : null;
+}
+
+export {
+  getCityWeatherNow,
+  getCityWeatherForecast,
+  getCityLocationByAdcode,
+  getCityByProvince,
+  getProvince
+}
