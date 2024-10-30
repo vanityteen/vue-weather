@@ -1,18 +1,25 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { computed } from "vue";
+import { useRoute } from "vue-router";
 
-onMounted(() => {
-})
+  const route = useRoute()
+  const getBreadcrumb = computed(()=>{
+    let matched = route.matched.filter(item=> {
+      return item.meta && item.meta.title
+    }).filter(item=> item.path !== "/")
+    return matched
+  })  
 </script>
 
 <template>
   <div class="main-container">
-    <el-breadcrumb separator="/" active-color="#ff0000">
-      <el-breadcrumb-item :to="{ path: '/' }">Province</el-breadcrumb-item>
-      <el-breadcrumb-item :to="{ path: '/city' }">City</el-breadcrumb-item>
-      <el-breadcrumb-item>Weather</el-breadcrumb-item>
+    <el-breadcrumb separator="/" active-color="#3461ff">
+      <el-breadcrumb-item :to="{ path: '/' }">省份</el-breadcrumb-item>
+      <el-breadcrumb-item v-for="(item,index) in getBreadcrumb" :to="item.path" :key="index">
+        {{ item.meta.title }}
+      </el-breadcrumb-item>
     </el-breadcrumb>
-    <!--显示路由-->
+    <!-- 显示路由 -->
     <router-view></router-view>
   </div>
 </template>

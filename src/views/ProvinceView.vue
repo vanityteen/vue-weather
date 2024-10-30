@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import router from '@/router';
-import { onMounted, ref } from 'vue';
 import { getProvince } from '@/requests/weather';
 import { useCountryStore } from '@/stores/country';
-import { storeToRefs } from 'pinia';
 import { ElLoading } from 'element-plus';
+import { onMounted, ref } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 
 // 类型定义
 export type ResultType = {
@@ -15,7 +14,7 @@ export type ResultType = {
 export type ProvinceType = {
   name: string;
   adcode: string;
-  [key:string]:any;
+  [key: string]: any;
 }
 
 // 全局状态
@@ -38,21 +37,25 @@ onMounted(async () => {
   loadingInstance.close();
 })
 
-const forwardToCity = (province:ProvinceType) => {
-  const { name, adcode }  = province
-  changeCurrentProvince(province)
-  router.push({ name: 'city', query: { name, adcode } });
-}
+const route = useRoute()
+const router = useRouter()
 
+const forwardToCity = (province:ProvinceType) => {
+  changeCurrentProvince(province)
+  router.push({ name:"city" });
+}
 </script>
 
 <template>
-  <div class="province-container">
+  <div class="province-container" v-if="route.path === '/'">
     <h1>Province</h1>
-    <li v-for="province in ProvinceList" :key="province.adcode" @click="forwardToCity(province)">
-      {{ province.name }}
-    </li>
+    <ul>
+      <li v-for="province in ProvinceList" :key="province.adcode" @click="forwardToCity(province)">
+        {{ province.name }}
+      </li>
+    </ul>
   </div>
+  <router-view></router-view>
 </template>
 
 <style scoped lang="less">
@@ -64,6 +67,20 @@ const forwardToCity = (province:ProvinceType) => {
 
   >h1 {
     font-weight: 700;
+  }
+
+  ul {
+    list-style: none;
+
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(288px, 1fr));
+    gap: 16px;
+
+    padding: 0;
+
+    >li {
+      cursor: pointer;
+    }
   }
 }
 </style>

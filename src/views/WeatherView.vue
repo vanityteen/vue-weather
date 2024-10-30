@@ -1,11 +1,13 @@
 <script setup lang="ts">
-import router from '@/router';
 import { onBeforeMount, onMounted, ref } from 'vue';
 import { useCountryStore } from '@/stores/country';
 import { storeToRefs } from 'pinia';
 import { getCityWeatherForecast, getCityLocationByAdcode, getCityWeatherNow } from '@/requests/weather';
 import { ResultType } from './ProvinceView.vue';
 import { ElLoading } from 'element-plus'
+import { useRoute, useRouter } from 'vue-router';
+
+const router = useRouter()
 
 const goBack = () => {
   router.go(-1);
@@ -81,7 +83,7 @@ onBeforeMount(() => {
       <div>
         <span>当前温度：{{ cityWeatherNow?.temp }}℃</span>
         <span>当前天气: {{ cityWeatherNow?.text }}</span>
-        <span>{{ cityWeatherForecastList[0].tempMax }}/{{ cityWeatherForecastList[0].tempMin }}</span>
+        <span>{{ cityWeatherForecastList[0]?.tempMax }}/{{ cityWeatherForecastList[0]?.tempMin }}</span>
       </div>
       <div class="weather-item" v-for="weather in cityWeatherForecastList" :key="weather.fxDate">
         <span>{{ weather.fxDate }}</span>

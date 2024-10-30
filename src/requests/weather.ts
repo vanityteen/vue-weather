@@ -49,7 +49,7 @@ function getCityByProvince(province: number | string = '四川', subdistrict: 0 
   return get(`/province`, {
     keywords: province,
     key: 'd1c11f906effa6c50f400d4016991320',
-    subdistrict: subdistrict
+    subdistrict: 2
   })
 }
 

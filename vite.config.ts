@@ -20,6 +20,7 @@ export default defineConfig({
       resolvers: [ElementPlusResolver()]
     })
   ],
+  base:"./",
   resolve: {
     alias: {
       '@': resolve('./src') // @代替src
@@ -29,6 +30,7 @@ export default defineConfig({
     host: '127.0.0.1', //自定义主机名
     port: 5180, //自定义端口
     https: false, // https是否开启,
+    open: true,
     proxy: {
       '/api': {
         target: 'https://devapi.qweather.com/v7/weather',
@@ -58,7 +60,7 @@ export default defineConfig({
           return path.replace(/^\/country/, '')
         }
       },
-    }
+    },
   },
   css: {
     preprocessorOptions: {

@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import router from '@/router';
-import { onBeforeMount, onMounted, ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { getCityByProvince } from '@/requests/weather';
 import { useCountryStore } from '@/stores/country';
 import { storeToRefs } from 'pinia';
 import { ElLoading } from 'element-plus';
+import { onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router';
 
 // 类型定义
 export type ResultType = {
@@ -26,15 +26,20 @@ onMounted(() => {
     background: 'rgba(0, 0, 0, 0.7)',
   })
 
-  getCityByProvince(current_province.adcode).then((res: ResultType) => {
+  getCityByProvince(current_province?.adcode).then((res: ResultType) => {
     cityNumberList.value = res.districts[0].districts;
     loadingInstance.close();
   });
 })
 
+
+const route = useRoute()
+const router = useRouter()
+
+
 const getCurCityWeather = (city) => {
   city && changeCurrentCity(city);
-  router.push({ name: 'weather', query: { name: city.name, adcode: city.adcode } });
+  router.push({ name: 'weather'});
 }
 
 const goBack = () => {
@@ -43,7 +48,7 @@ const goBack = () => {
 </script>
 
 <template>
-  <div class="province-container">
+  <div class="province-container" v-if="route.path === '/city'">
     <div class="header">
       <div class="back">
         <el-icon @click="goBack" :size="24" class="el-back-icon-hover">
@@ -53,13 +58,14 @@ const goBack = () => {
       </div>
       <i class="split"></i>
       <div class="info">
-        <h1>{{ current_province.name }}</h1>
+        <h1>{{ current_province?.name }}</h1>
       </div>
     </div>
     <li v-for="city in cityNumberList" :key="city.adcode" @click="getCurCityWeather(city)">
       {{ city.name }}
     </li>
   </div>
+  <router-view></router-view>
 </template>
 
 <style scoped lang="less">
@@ -73,35 +79,42 @@ const goBack = () => {
     display: flex;
     align-items: center;
     column-gap: 16px;
-    .back{
+
+    .back {
       display: flex;
       align-items: center;
       column-gap: 8px;
-      >span{
+
+      >span {
         font-size: 18px;
         font-weight: 700;
       }
-      .el-back-icon-hover:hover{
+
+      .el-back-icon-hover:hover {
         background-color: #f5f5f5;
         border: 1px solid #d9d9d9;
         border-radius: 5px;
         cursor: pointer;
       }
     }
+
     .split {
       width: 1px;
       height: 18px;
       background-color: #c5c5c5;
     }
-    .info{
+
+    .info {
       display: flex;
       align-items: center;
       column-gap: 16px;
+
       >h1 {
         font-weight: 700;
         font-size: 18px;
       }
-      >span{
+
+      >span {
         color: #c5c5c5;
       }
     }

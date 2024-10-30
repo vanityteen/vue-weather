@@ -1,4 +1,4 @@
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { defineStore } from 'pinia'
 
 // export const useCounterStore = defineStore('counter', () => {
@@ -12,28 +12,37 @@ import { defineStore } from 'pinia'
 // })
 
 interface ProvinceType {
-  name: string;
-  adcode: string;
-  [key:string]:any;
+  name: string
+  adcode: string
+  [key: string]: any
 }
 
-interface CityType extends ProvinceType{
-  level: string;
-  center?: string;
-  citycode?: Array<any>;
-  [key:string]:any;
+interface CityType extends ProvinceType {
+  level: string
+  center?: string
+  citycode?: Array<any>
+  [key: string]: any
 }
 
 export const useCountryStore = defineStore('country', () => {
-  const current_province = ref<ProvinceType>();
-  const current_city = ref<CityType>();
+  const current_province = ref<ProvinceType>()
+  const current_city = ref<CityType>()
+
+  watch(
+    current_province,
+    (newObj) => {
+      if (!current_province.value) return
+      localStorage.setItem('current_province', JSON.stringify(newObj))
+    },
+    { deep: true }
+  )
 
   function changeCurrentProvince(province: ProvinceType) {
-    current_province.value = province;
+    current_province.value = province
   }
 
   function changeCurrentCity(city: CityType) {
-    current_city.value = city;
+    current_city.value = city
   }
 
   return {
