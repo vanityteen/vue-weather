@@ -1,11 +1,17 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
-import ProvinceView from '@/views/ProvinceView.vue'
+import ProvinceView from '@/views/Weather/ProvinceView.vue'
+import Home from '@/views/Home.vue'
 
 const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/',
+      path: '/home',
+      name: 'home',
+      component: Home,
+    },
+    {
+      path: '/weather/province',
       name: 'province',
       component: ProvinceView,
       meta: {
@@ -13,20 +19,20 @@ const router = createRouter({
       },
       children: [
         {
-          path: '/city',
+          path: '/weather/city',
           name: 'city',
-          component: () => import('@/views/CityView.vue'),
+          component: () => import('@/views/Weather/CityView.vue'),
           meta: {
             title: '城市'
           },
           children: [
             {
-              path: '/weather',
-              name: 'weather',
+              path: '/weather/detail',
+              name: 'detail',
               // route level code-splitting
               // this generates a separate chunk (About.[hash].js) for this route
               // which is lazy-loaded when the route is visited.
-              component: () => import('@/views/WeatherView.vue'),
+              component: () => import('@/views/Weather/WeatherView.vue'),
               meta: {
                 title: '天气'
               }

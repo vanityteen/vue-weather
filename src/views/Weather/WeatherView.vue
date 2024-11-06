@@ -3,7 +3,7 @@ import { onBeforeMount, onMounted, ref } from 'vue';
 import { useCountryStore } from '@/stores/country';
 import { storeToRefs } from 'pinia';
 import { getCityWeatherForecast, getCityLocationByAdcode, getCityWeatherNow } from '@/requests/weather';
-import { ResultType } from './ProvinceView.vue';
+import { ResultType } from '../Weather/ProvinceView.vue';
 import { ElLoading } from 'element-plus'
 import { useRoute, useRouter } from 'vue-router';
 

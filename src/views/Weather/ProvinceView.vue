@@ -2,7 +2,7 @@
 import { getProvince } from '@/requests/weather';
 import { useCountryStore } from '@/stores/country';
 import { ElLoading } from 'element-plus';
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 // 类型定义
@@ -40,14 +40,27 @@ onMounted(async () => {
 const route = useRoute()
 const router = useRouter()
 
-const forwardToCity = (province:ProvinceType) => {
+const forwardToCity = (province: ProvinceType) => {
   changeCurrentProvince(province)
-  router.push({ name:"city" });
+  router.push({ name: "city" });
 }
+
+const getBreadcrumb = computed(() => {
+  let matched = route.matched.filter(item => {
+    return item.meta && item.meta.title
+  }).filter(item => item.path !== '/weather/province')
+  return matched
+})  
 </script>
 
 <template>
-  <div class="province-container" v-if="route.path === '/'">
+  <el-breadcrumb separator="/" active-color="#3461ff">
+    <el-breadcrumb-item :to="{ path:'/weather/province'}">省份</el-breadcrumb-item>
+    <el-breadcrumb-item v-for="(item, index) in getBreadcrumb" :to="item.path" :key="index">
+      {{ item.meta.title }}
+    </el-breadcrumb-item>
+  </el-breadcrumb>
+  <div class="province-container" v-if="route.path === '/weather/province'">
     <h1>Province</h1>
     <ul>
       <li v-for="province in ProvinceList" :key="province.adcode" @click="forwardToCity(province)">

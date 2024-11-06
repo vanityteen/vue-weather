@@ -39,7 +39,7 @@ const router = useRouter()
 
 const getCurCityWeather = (city) => {
   city && changeCurrentCity(city);
-  router.push({ name: 'weather'});
+  router.push({ name: 'detail'});
 }
 
 const goBack = () => {
@@ -48,7 +48,7 @@ const goBack = () => {
 </script>
 
 <template>
-  <div class="province-container" v-if="route.path === '/city'">
+  <div class="province-container" v-if="route.path === '/weather/city'">
     <div class="header">
       <div class="back">
         <el-icon @click="goBack" :size="24" class="el-back-icon-hover">
